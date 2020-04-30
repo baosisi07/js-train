@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lazyLoad</title>
+    <style>
+        .img-wrapper {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .img img {
+            list-style: none;
+            width: 200px;
+            height: 140px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <ul class="img-wrapper">
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+        <li class="img"><img data-src="./imgs/01.jpg" alt="加载中"></li>
+    </ul>
+</body>
+<script src="./throttle.js"></script>
+<script>
+    var imgs = document.getElementsByTagName('img')
+    var num = 0
+    var viewHeight = window.innerHeight || document.documentElement.clientHeight //获取视图高度
+    function lazyLoad() {
+        console.log('图片加载……')
+        for(let i = num; i < imgs.length; i++) {
+        let res = viewHeight - imgs[i].getBoundingClientRect().top // 图片顶边距视图顶部的距离
+        if(res >= 0) { // 图片出现在视图时 设置src
+            imgs[i].src = imgs[i].getAttribute('data-src')
+            num = i + 1
+        }
+    }
+    }
+    lazyLoad()
+    let throttleFun = throttle(lazyLoad, 500)
+    window.addEventListener('scroll', throttleFun, false);
+</script>
+</html>
