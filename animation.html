@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>requestAnimation and requestIdleCallback</title>
+    <style>
+        #animation {
+            width: 200px;
+            height: 200px;
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <div id="animation"></div>
+    <script>
+        let start = null;
+        let animationEle = document.getElementById('animation');
+        animationEle.style.position = 'absolute';
+        const step = function(timestamp) {
+            if(!start) {
+                start = timestamp;
+            }
+            let progress = timestamp - start;
+            animationEle.style.left = Math.min(progress / 10, 200) + 'px';
+            // 每帧操作少 即有空闲时间会立即执行requestIdleCallback 动画开始前就调用
+
+            // 浏览器每帧都很忙 即没有空闲时 会无视requestIdleCallback 动画结束时调用
+            // let i = 1000;
+            // while(i > 0) {
+            //     console.log('i:' + i)
+            //     i--
+            // }
+
+            if(progress < 2000)
+            window.requestAnimationFrame(step);
+        }
+        window.requestAnimationFrame(step);
+        window.requestIdleCallback((deadline) => {
+            console.log(deadline.timeRemaining()) // 表示浏览器是否空闲 deadline最大为50ms
+            alert('rIC')
+        })
+    </script>
+</body>
+</html>
